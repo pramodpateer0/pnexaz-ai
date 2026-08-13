@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PnexaZ AI</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background: #08080d;
+    color: white;
+}
+
+/* ================= SPLASH SCREEN ================= */
+
+#splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #08080d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: splashIn 1s ease;
+}
+
+.splash-logo {
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #315bea;
+    box-shadow: 0 0 35px rgba(49, 91, 234, 0.45);
+}
+
+.splash-title {
+    margin-top: 22px;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+.splash-subtitle {
+    margin-top: 8px;
+    color: #aaa;
+    font-size: 15px;
+}
+
+.loading {
+    margin-top: 25px;
+    width: 150px;
+    height: 4px;
+    background: #22222c;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.loading-bar {
+    width: 0%;
+    height: 100%;
+    background: #315bea;
+    animation: loading 7s linear forwards;
+}
+
+@keyframes loading {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes splashIn {
+    from {
+        opacity: 0;
+        transform: scale(.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.splash-hide {
+    animation: splashOut .7s ease forwards;
+}
+
+@keyframes splashOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+
+/* ================= MAIN APP ================= */
+
+#app {
+    display: none;
+    height: 100vh;
+    background: #0b0b10;
+}
+
+header {
+    height: 65px;
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    border-bottom: 1px solid #292933;
+    background: #111118;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.main {
+    height: calc(100vh - 65px);
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome {
+    text-align: center;
+    padding: 35px 15px 10px;
+}
+
+.welcome h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.welcome p {
+    color: #aaa;
+}
+
+#messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    max-width: 850px;
+    width: 100%;
+    margin: auto;
+}
+
+.message {
+    max-width: 80%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border-radius: 15px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.user {
+    margin-left: auto;
+    background: #315bea;
+}
+
+.ai {
+    margin-right: auto;
+    background: #1b1b24;
+}
+
+.typing {
+    color: #aaa;
+    font-style: italic;
+}
+
+.input-area {
+    width: 100%;
+    max-width: 850px;
+    margin: auto;
+    padding: 12px;
+    display: flex;
+    gap: 10px;
+}
+
+#message {
+    flex: 1;
+    padding: 15px;
+    border-radius: 25px;
+    border: 1px solid #33333d;
+    outline: none;
+    background: #17171f;
+    color: white;
+    font-size: 16px;
+}
+
+#send {
+    border: none;
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    background: #315bea;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#send:disabled {
+    opacity: .5;
+}
+
+@media (max-width: 600px) {
+
+    .splash-logo {
+        width: 125px;
+        height: 125px;
+    }
+
+    .splash-title {
+        font-size: 27px;
+    }
+
+    .welcome h1 {
+        font-size: 25px;
+    }
+
+    .message {
+        max-width: 88%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+
+<!-- ================= SPLASH SCREEN ================= -->
+
+<div id="splash">
+
+    <div class="splash-content">
+
+        <img
+            src="logo.png"
+            class="splash-logo"
+            alt="PnexaZ AI"
+        >
+
+        <div class="splash-title">
+            PnexaZ AI
+        </div>
+
+        <div class="splash-subtitle">
+            Your AI Assistant
+        </div>
+
+        <div class="loading">
+            <div class="loading-bar"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN APP ================= -->
+
+<div id="app">
+
+    <header>
+
+        <div class="logo">
+
+            <img
+                src="logo.png"
+                alt="PnexaZ AI"
+            >
+
+            <span>PnexaZ AI</span>
+
+        </div>
+
+    </header>
+
+
+    <div class="main">
+
+        <div
+            class="welcome"
+            id="welcome"
+        >
+
+            <h1>
+                Welcome to PnexaZ AI
+            </h1>
+
+            <p>
+                Your AI assistant
+            </p>
+
+        </div>
+
+
+        <div id="messages"></div>
+
+
+        <div class="input-area">
+
+            <input
+                id="message"
+                type="text"
+                placeholder="Ask PnexaZ AI..."
+                autocomplete="off"
+            >
+
+            <button
+                id="send"
+            >
+                ➤
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ================= SPLASH ================= */
+
+setTimeout(function () {
+
+    const splash =
+        document.getElementById("splash");
+
+    const app =
+        document.getElementById("app");
+
+    splash.classList.add("splash-hide");
+
+    setTimeout(function () {
+
+        splash.style.display = "none";
+
+        app.style.display = "block";
+
+    }, 700);
+
+}, 7000);
+
+
+/* ================= CHAT ================= */
+
+const input =
+    document.getElementById("message");
+
+const send =
+    document.getElementById("send");
+
+const messages =
+    document.getElementById("messages");
+
+const welcome =
+    document.getElementById("welcome");
+
+
+function addMessage(text, type) {
+
+    const div =
+        document.createElement("div");
+
+    div.className =
+        "message " + type;
+
+    div.textContent =
+        text;
+
+    messages.appendChild(div);
+
+    messages.scrollTop =
+        messages.scrollHeight;
+
+    return div;
+}
+
+
+async function sendMessage() {
+
+    const text =
+        input.value.trim();
+
+    if (!text) return;
+
+
+    if (welcome) {
+        welcome.style.display = "none";
+    }
+
+
+    addMessage(
+        text,
+        "user"
+    );
+
+
+    input.value = "";
+
+    send.disabled = true;
+
+
+    const thinking =
+        addMessage(
+            "PnexaZ AI is thinking...",
+            "ai"
+        );
+
+
+    thinking.classList.add(
+        "typing"
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/chat",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        message: text
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        thinking.remove();
+
+
+        addMessage(
+            data.reply ||
+            "No response received.",
+            "ai"
+        );
+
+
+    } catch (error) {
+
+        thinking.remove();
+
+
+        addMessage(
+            "Server se connection nahi ho pa raha.",
+            "ai"
+        );
+
+
+        console.error(error);
+
+    }
+
+
+    send.disabled = false;
+
+    input.focus();
+}
+
+
+send.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+input.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
